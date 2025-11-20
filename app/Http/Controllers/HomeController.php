@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
+use App\Models\Category;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -14,7 +15,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::orderBy('created_at', 'desc')->paginate(5);
         return view('home', compact('posts'));
     }
 
@@ -25,7 +26,9 @@ class HomeController extends Controller
      */
     public function create()
     {
-        return view('create');
+        $categories = Category::all();
+
+        return view('create', compact('categories'));
     }
 
     /**
@@ -34,14 +37,24 @@ class HomeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $post = new Post();
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'description' => 'required|string|max:1000',
+        // ]);
 
-        $post->name = $request->name;
-        $post->description = $request->description;
+        // $post = new Post();
+        // $post->name = $request->name;
+        // $post->description = $request->description;
+        // $post->save();
 
-        $post->save();
+        Post::create([
+            "name" => $request->name,
+            "description" => $request->description,
+            "category_id" => $request->category_id
+        ]);
+
         return redirect('/posts');
     }
 
@@ -51,9 +64,8 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        $post = Post::findOrFail($id);
         return view('show', compact('post'));
     }
 
@@ -63,10 +75,10 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        $post = Post::findOrFail($id);
-        return view('edit', compact('post'));
+        $categories = Category::all();
+        return view('edit', compact('post', 'categories'));
     }
 
     /**
@@ -76,14 +88,17 @@ class HomeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePostRequest $request, Post $post)
     {
-        $post = Post::findOrFail($id);
+        // $post->name = $request->name;
+        // $post->description = $request->description;
+        // $post->save();
 
-        $post->name = $request->name;
-        $post->description = $request->description;
+        $post->update([
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
 
-        $post->save();
         return redirect('/posts');
     }
 
