@@ -8,6 +8,12 @@ use App\Models\Post;
 
 class HomeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -96,7 +102,8 @@ class HomeController extends Controller
 
         $post->update([
             'name' => $request->name,
-            'description' => $request->description
+            'description' => $request->description,
+            'category_id' => $request->category_id
         ]);
 
         return redirect('/posts');

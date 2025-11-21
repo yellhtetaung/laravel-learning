@@ -1,45 +1,69 @@
 <x-layout>
 
-    <a href="/posts" class="btn-back">
+    <a href="/posts/{{ $post->id }}" class="btn-back">
         <i class="fa-solid fa-arrow-left"></i>
     </a>
 
-    <form action="/posts/{{ $post->id }}" method="POST" class="card mt-5">
+    <form action="/posts/{{ $post->id }}" method="POST">
         @csrf
         @method('PUT')
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter post name"
-                    value="{{ old('name', $post->name) }}">
-                @error('name')
-                    <span class="text-sm text-danger">{{ $message }}</span>
-                @enderror
-            </div>
+        <div class="space-y-12">
+            <div class="border-b border-gray-900/10 pb-12">
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter post description">{{ old('description', $post->description) }}</textarea>
-                @error('description ')
-                    <span class="text-sm text-danger">{{ $message }}</span>
-                @enderror
-            </div>
+                    <div class="col-span-full">
+                        <label for="name" class="block text-sm/6 font-medium text-gray-900">Name</label>
+                        <div class="mt-2">
+                            <input id="name" type="text" name="name" value="{{ old('name', $post->name) }}"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                            @error('name')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
 
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <select class="form-select" name="category_id" id="category_id" aria-label="Default select example">
-                    <option selected disabled>Select the category</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}"
-                            {{ old('category_id', $post->category_id) == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}</option>
-                    @endforeach
-                </select>
-            </div>
+                    <div class="col-span-full">
+                        <label for="description" class="block text-sm/6 font-medium text-gray-900">Description</label>
+                        <div class="mt-2">
+                            <textarea id="description" name="description" rows="3"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">{{ old('description', $post->description) }}</textarea>
+                            @error('description')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
 
-            <div class="d-flex justify-content-end align-items-center">
-                <button type="submit" class="btn btn-primary">Update</button>
+                    <div class="col-span-full">
+                        <label for="category_id" class="block text-sm/6 font-medium text-gray-900">Category</label>
+                        <div class="mt-2 grid grid-cols-1">
+                            <select id="category_id" name="category_id"
+                                class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                                <option selected disabled>Select the category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id', $post->category->id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true"
+                                class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4">
+                                <path
+                                    d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" fill-rule="evenodd" />
+                            </svg>
+                        </div>
+                        @error('category_id')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-x-2">
+            <a href="/posts/{{ $post->id }}" class="btn-danger">Cancel</a>
+            <button type="submit" class="btn-success">Update</button>
         </div>
     </form>
 
